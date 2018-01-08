@@ -11,4 +11,15 @@ package com.excellence.bluetoothlibrary;
 
 public class BluetoothClient
 {
+	public static final String TAG = BluetoothClient.class.getSimpleName();
+
+	public BluetoothClient()
+	{
+
+	}
+
+	public static void search(BluetoothRequest request)
+	{
+
+	}
 }
