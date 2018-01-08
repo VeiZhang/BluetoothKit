@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 26
@@ -33,6 +32,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
+
+/*********************上传jCenter依赖*********************/
+apply plugin: 'com.novoda.bintray-release'
 
 buildscript {
     repositories {
@@ -68,13 +70,15 @@ tasks.withType(Javadoc) {
 }
 
 /**发布到我的Bintray仓库**/
-def key = getBintrayKey()
+def user = getPropertyValue('bintrayUser')
+def key = getPropertyValue('bintrayKey')
+def org = getPropertyValue('userOrg')
 
 publish {
-    bintrayUser = 'veizhang'
+    bintrayUser = user
     bintrayKey = key
     dryRun = false
-    userOrg = 'veizhang'
+    userOrg = org
     groupId = 'com.excellence'
     artifactId = 'bluetooth'
     publishVersion = '1.0.0'
@@ -84,15 +88,18 @@ publish {
 }
 
 /**读取bintray.key文件的key**/
-def getBintrayKey() {
+def getPropertyValue(String key) {
+    if (key == null || key.length() == 0)
+        return null
+
     File file = project.rootProject.file('../../bintray.key')
     if (!file.exists())
         return null
 
-    InputStream inputStream = file.newDataInputStream();
+    InputStream inputStream = file.newDataInputStream()
     Properties properties = new Properties()
     properties.load(inputStream)
 
     //读取Key
-    return properties.getProperty('bintrayKey')
+    return properties.getProperty(key)
 }
