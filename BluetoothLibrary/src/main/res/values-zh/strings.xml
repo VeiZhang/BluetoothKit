@@ -2,8 +2,8 @@
 <resources>
 
 
-    <string name="setting_prompt">温馨提示</string>
-    <string name="open_location">请打开定位</string>
+    <string name="setting_prompt">申请定位权限</string>
+    <string name="open_location">请打开定位，否则不能搜索到蓝牙设备！</string>
     <string name="cancel">取消</string>
     <string name="open">设置</string>
 

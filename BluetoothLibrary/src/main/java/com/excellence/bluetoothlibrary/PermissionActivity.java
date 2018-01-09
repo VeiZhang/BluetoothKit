@@ -63,25 +63,31 @@ public class PermissionActivity extends Activity
 		else if (!isLocationEnabled(this))
 		{
 			Log.w(TAG, "onCreate: location is not enabled");
+			final Intent enabledLocationIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+			if (enabledLocationIntent.resolveActivity(getPackageManager()) == null)
+			{
+				Log.w(TAG, "onCreate: location setting is not exists");
+				mPermissionListener.onBluetoothPermissionGranted();
+				mPermissionListener = null;
+				finish();
+				return;
+			}
+
 			new AlertDialog.Builder(this).setCancelable(false).setTitle(R.string.setting_prompt).setMessage(R.string.open_location)
 					.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
 					{
 						@Override
 						public void onClick(DialogInterface dialog, int which)
 						{
-							if (mPermissionListener != null)
-							{
-								mPermissionListener.onBluetoothError(new BluetoothPermissionError("Cancel, location permission denied!"));
-								mPermissionListener = null;
-								finish();
-							}
+							mPermissionListener.onBluetoothError(new BluetoothPermissionError("Cancel, location permission denied!"));
+							mPermissionListener = null;
+							finish();
 						}
 					}).setPositiveButton(R.string.open, new DialogInterface.OnClickListener()
 					{
 						@Override
 						public void onClick(DialogInterface dialog, int which)
 						{
-							Intent enabledLocationIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 							startActivityForResult(enabledLocationIntent, LOCATION_ENABLED_REQUEST_CODE);
 						}
 					}).show();

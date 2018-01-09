@@ -33,6 +33,7 @@ public class BluetoothClient
 	private static BluetoothClient mInstance = null;
 
 	private Context mContext = null;
+	private IScannerListener mScannerListenerImp = null;
 	private IScannerListener mScannerListener = null;
 	private IPermissionListener mPermissionListener = null;
 
@@ -46,12 +47,13 @@ public class BluetoothClient
 	public BluetoothClient(Context context)
 	{
 		mContext = context;
+		mScannerListenerImp = new ScannerListenerImp();
+		mPermissionListener = new PermissionListener();
 	}
 
 	public void search(BluetoothRequest request, IScannerListener listener)
 	{
 		mScannerListener = listener;
-		mPermissionListener = new PermissionListener();
 		/**
 		 * 不支持蓝牙设备
 		 */
@@ -82,6 +84,11 @@ public class BluetoothClient
 		mContext.startActivity(intent);
 	}
 
+	public void stopScan()
+	{
+
+	}
+
 	private class PermissionListener implements IPermissionListener
 	{
 		@Override
@@ -104,13 +111,44 @@ public class BluetoothClient
 		@Override
 		public void onBluetoothPermissionGranted()
 		{
-			mScannerListener.onScanStarted();
+			mScannerListenerImp.onScanStarted();
 		}
 
 		@Override
 		public void onBluetoothError(BluetoothError e)
 		{
-			mScannerListener.onScanFailed(e);
+			mScannerListenerImp.onScanFailed(e);
+		}
+	}
+
+	private class ScannerListenerImp implements IScannerListener
+	{
+		@Override
+		public void onScanStarted()
+		{
+			if (mScannerListener != null)
+				mScannerListener.onScanStarted();
+		}
+
+		@Override
+		public void onScanning()
+		{
+			if (mScannerListener != null)
+				mScannerListener.onScanning();
+		}
+
+		@Override
+		public void onScanFinished()
+		{
+			if (mScannerListener != null)
+				mScannerListener.onScanFinished();
+		}
+
+		@Override
+		public void onScanFailed(BluetoothError e)
+		{
+			if (mScannerListener != null)
+				mScannerListener.onScanFailed(e);
 		}
 	}
 }

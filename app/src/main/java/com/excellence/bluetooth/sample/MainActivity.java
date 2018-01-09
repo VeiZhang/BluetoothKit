@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.excellence.bluetooth.sample.databinding.ActivityMainBinding;
+import com.excellence.bluetoothlibrary.BluetoothClient;
+import com.excellence.bluetoothlibrary.BluetoothRequest;
+
+import static com.excellence.bluetoothlibrary.BluetoothRequest.SearchMethod.BLUETOOTH_LE;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -20,6 +24,8 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onClick(View v)
 			{
+				BluetoothRequest request = new BluetoothRequest.Builder().setSearchMethod(BLUETOOTH_LE).build();
+				BluetoothClient.getInstance(MainActivity.this).search(request, null);
 			}
 		});
 	}
