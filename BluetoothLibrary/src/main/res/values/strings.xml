@@ -1,3 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">BluetoothLibrary</string>
+    <string name="setting_prompt">Warm prompt</string>
+    <string name="open_location">Please open location setting</string>
+    <string name="cancel">Cancel</string>
+    <string name="open">Open</string>
+
 </resources>

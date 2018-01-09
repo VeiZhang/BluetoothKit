@@ -22,6 +22,8 @@ public class BluetoothRequest
 	private List<UUID> mServiceUuids = null;
 	private long mTimeOut = 0;
 	private boolean isAutoConnect = false;
+	private boolean isBluetoothLe = true;
+	private boolean isBluetoothClassic = false;
 
 	private BluetoothRequest(Builder builder)
 	{
@@ -30,6 +32,8 @@ public class BluetoothRequest
 		mServiceUuids = builder.mServiceUuids;
 		mTimeOut = builder.mTimeOut;
 		isAutoConnect = builder.isAutoConnect;
+		isBluetoothLe = builder.isBluetoothLe;
+		isBluetoothClassic = builder.isBluetoothClassic;
 	}
 
 	public static class Builder
@@ -41,6 +45,8 @@ public class BluetoothRequest
 		private List<UUID> mServiceUuids = null;
 		private long mTimeOut = DEFAULT_TIME_OUT;
 		private boolean isAutoConnect = false;
+		private boolean isBluetoothLe = true;
+		private boolean isBluetoothClassic = false;
 
 		public Builder()
 		{
@@ -109,7 +115,7 @@ public class BluetoothRequest
 		/**
 		 * 设置搜索超时时间
 		 *
-		 * @param time unit:ms
+		 * @param time unit: ms
 		 * @return
 		 */
 		public Builder setScanTimeOut(long time)
@@ -125,10 +131,36 @@ public class BluetoothRequest
 		 * 是否自动连接
 		 *
 		 * @param isAutoConnect
+		 * @return
 		 */
-		public void isAutoConnect(boolean isAutoConnect)
+		public Builder isAutoConnect(boolean isAutoConnect)
 		{
 			this.isAutoConnect = isAutoConnect;
+			return this;
+		}
+
+		/**
+		 * 搜索方式: BLE低功耗蓝牙 - 默认true
+		 *
+		 * @param isBluetoothLe
+		 * @return
+		 */
+		public Builder isBluetoothLe(boolean isBluetoothLe)
+		{
+			this.isBluetoothLe = isBluetoothLe;
+			return this;
+		}
+
+		/**
+		 * 搜索方式: 经典蓝牙 - 默认false
+		 *
+		 * @param isBluetoothClassic
+		 * @return
+		 */
+		public Builder isBluetoothClassic(boolean isBluetoothClassic)
+		{
+			this.isBluetoothClassic = isBluetoothClassic;
+			return this;
 		}
 
 		public BluetoothRequest build()
