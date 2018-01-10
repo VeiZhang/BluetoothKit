@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -17,6 +18,7 @@ import android.support.annotation.Nullable;
 
 import com.excellence.bluetoothlibrary.data.BluetoothKitDevice;
 import com.excellence.bluetoothlibrary.callback.IScannerListener;
+import com.excellence.bluetoothlibrary.exception.BluetoothScanError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,8 @@ public class BluetoothScanService extends Service implements Handler.Callback
 	private IScannerListener mScannerListenerImp = null;
 	private List<BluetoothKitDevice> mBleKitDeviceList = null;
 	private BluetoothAdapter mBluetoothAdapter = null;
+	private boolean isBluetoothLeRunning = false;
+	private boolean isBluetoothClassicRunning = false;
 
 	@Override
 	public boolean onUnbind(Intent intent)
@@ -66,7 +70,21 @@ public class BluetoothScanService extends Service implements Handler.Callback
 		@Override
 		public void onReceive(Context context, Intent intent)
 		{
-
+			if (intent == null || intent.getAction() == null)
+				return;
+			switch (intent.getAction())
+			{
+			case BluetoothAdapter.ACTION_STATE_CHANGED:
+				int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF);
+				if (state == BluetoothAdapter.STATE_OFF)
+				{
+					if (mScannerListenerImp != null && isBluetoothLeRunning && isBluetoothClassicRunning)
+					{
+						mScannerListenerImp.onScanFailed(new BluetoothScanError("Bluetooth close when scanning!"));
+					}
+				}
+				break;
+			}
 		}
 	};
 
@@ -102,22 +120,38 @@ public class BluetoothScanService extends Service implements Handler.Callback
 	@SuppressLint("MissingPermission")
 	private void startDiscovery()
 	{
+		isBluetoothClassicRunning = true;
 		mBluetoothAdapter.startDiscovery();
 	}
 
-	@SuppressLint({ "MissingPermission", "NewApi" })
+	@SuppressLint("MissingPermission")
+	private void cancelDiscovery()
+	{
+		isBluetoothClassicRunning = false;
+		mBluetoothAdapter.cancelDiscovery();
+	}
+
+	@SuppressLint("MissingPermission")
 	private void startScan()
 	{
-		mBluetoothAdapter.startLeScan(mBluetoothRequest.getServiceUuids().toArray(new UUID[mBluetoothRequest.getServiceUuids().size()]), mLeScanCallback);
+		isBluetoothLeRunning = true;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+		{
+			mBluetoothAdapter.startLeScan(mBluetoothRequest.getServiceUuids().toArray(new UUID[mBluetoothRequest.getServiceUuids().size()]), mLeScanCallback);
+		}
 		mHandler.removeCallbacksAndMessages(null);
 		mHandler.sendEmptyMessageDelayed(MSG_STOP_SEARCH, mBluetoothRequest.getTimeOut());
 	}
 
-	@SuppressLint({ "MissingPermission", "NewApi" })
+	@SuppressLint("MissingPermission")
 	private void stopScan()
 	{
+		isBluetoothLeRunning = false;
 		mHandler.removeCallbacksAndMessages(null);
-		mBluetoothAdapter.stopLeScan(mLeScanCallback);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+		{
+			mBluetoothAdapter.stopLeScan(mLeScanCallback);
+		}
 	}
 
 	@Override
