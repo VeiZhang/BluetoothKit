@@ -1,12 +1,19 @@
 package com.excellence.bluetoothlibrary;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Build;
+import android.os.IBinder;
+import android.util.Log;
 
+import com.excellence.bluetoothlibrary.data.BluetoothKitDevice;
 import com.excellence.bluetoothlibrary.exception.BluetoothError;
-import com.excellence.bluetoothlibrary.listener.IScannerListener;
-import com.excellence.bluetoothlibrary.listener.IPermissionListener;
+import com.excellence.bluetoothlibrary.callback.IScannerListener;
+import com.excellence.bluetoothlibrary.callback.IPermissionListener;
+
+import java.util.List;
 
 import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isBluetoothEnabled;
 import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isLocationEnabled;
@@ -33,6 +40,9 @@ public class BluetoothClient
 	private static BluetoothClient mInstance = null;
 
 	private Context mContext = null;
+	private BluetoothScanService mBluetoothScanService = null;
+	private boolean isServiceBind = false;
+	private BluetoothRequest mBluetoothRequest = null;
 	private IScannerListener mScannerListenerImp = null;
 	private IScannerListener mScannerListener = null;
 	private IPermissionListener mPermissionListener = null;
@@ -53,6 +63,11 @@ public class BluetoothClient
 
 	public void search(BluetoothRequest request, IScannerListener listener)
 	{
+		mBluetoothRequest = request;
+		if (mBluetoothRequest == null)
+		{
+			mBluetoothRequest = new BluetoothRequest.Builder().build();
+		}
 		mScannerListener = listener;
 		/**
 		 * 不支持蓝牙设备
@@ -84,9 +99,14 @@ public class BluetoothClient
 		mContext.startActivity(intent);
 	}
 
-	public void stopScan()
+	public void stopSearch()
 	{
-
+		if (mBluetoothScanService == null)
+		{
+			Log.e(TAG, "stopSearch: please search first");
+			return;
+		}
+		mBluetoothScanService.stopSearch();
 	}
 
 	private class PermissionListener implements IPermissionListener
@@ -128,20 +148,24 @@ public class BluetoothClient
 		{
 			if (mScannerListener != null)
 				mScannerListener.onScanStarted();
+
+			if (isServiceBind)
+				mContext.unbindService(mServiceConnection);
+			isServiceBind = mContext.bindService(new Intent(mContext, BluetoothScanService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
 		}
 
 		@Override
-		public void onScanning()
+		public void onScanning(BluetoothKitDevice device)
 		{
 			if (mScannerListener != null)
-				mScannerListener.onScanning();
+				mScannerListener.onScanning(device);
 		}
 
 		@Override
-		public void onScanFinished()
+		public void onScanFinished(List<BluetoothKitDevice> deviceList)
 		{
 			if (mScannerListener != null)
-				mScannerListener.onScanFinished();
+				mScannerListener.onScanFinished(deviceList);
 		}
 
 		@Override
@@ -151,4 +175,20 @@ public class BluetoothClient
 				mScannerListener.onScanFailed(e);
 		}
 	}
+
+	private ServiceConnection mServiceConnection = new ServiceConnection()
+	{
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service)
+		{
+			mBluetoothScanService = ((BluetoothScanService.BluetoothBinder) service).getService();
+			mBluetoothScanService.search(mBluetoothRequest, mScannerListenerImp);
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name)
+		{
+			mBluetoothScanService = null;
+		}
+	};
 }

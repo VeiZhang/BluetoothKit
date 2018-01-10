@@ -34,6 +34,36 @@ public class BluetoothRequest
 		mSearchMethod = builder.mSearchMethod;
 	}
 
+	public List<String> getDeviceNameList()
+	{
+		return mDeviceNameList;
+	}
+
+	public List<String> getDeviceMacList()
+	{
+		return mDeviceMacList;
+	}
+
+	public List<UUID> getServiceUuids()
+	{
+		return mServiceUuids;
+	}
+
+	public long getTimeOut()
+	{
+		return mTimeOut;
+	}
+
+	public boolean isAutoConnect()
+	{
+		return isAutoConnect;
+	}
+
+	public SearchMethod getSearchMethod()
+	{
+		return mSearchMethod;
+	}
+
 	public static class Builder
 	{
 		private static final long DEFAULT_TIME_OUT = 10 * 1000;
@@ -110,17 +140,14 @@ public class BluetoothRequest
 		}
 
 		/**
-		 * 设置搜索超时时间
+		 * 设置搜索超时时间，默认10s，<0表示不限制超时时间
 		 *
 		 * @param time unit: ms
 		 * @return
 		 */
 		public Builder setScanTimeOut(long time)
 		{
-			if (time > 0)
-			{
-				mTimeOut = time;
-			}
+			mTimeOut = time;
 			return this;
 		}
 

@@ -12,7 +12,7 @@ import android.util.Log;
 
 import com.excellence.bluetoothlibrary.exception.BluetoothEnabledError;
 import com.excellence.bluetoothlibrary.exception.BluetoothPermissionError;
-import com.excellence.bluetoothlibrary.listener.IPermissionListener;
+import com.excellence.bluetoothlibrary.callback.IPermissionListener;
 
 import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isBluetoothEnabled;
 import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isLocationEnabled;

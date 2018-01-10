@@ -1,4 +1,4 @@
-package com.excellence.bluetoothlibrary.listener;
+package com.excellence.bluetoothlibrary.callback;
 
 import com.excellence.bluetoothlibrary.exception.BluetoothError;
 

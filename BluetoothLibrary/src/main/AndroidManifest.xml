@@ -13,6 +13,7 @@
             android:theme="@style/permission"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden"/>
 
+        <service android:name=".BluetoothScanService"/>
     </application>
 
 </manifest>
