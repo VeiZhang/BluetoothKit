@@ -1,5 +1,18 @@
 package com.excellence.bluetoothlibrary;
 
+import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isBluetoothEnabled;
+import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isLocationEnabled;
+import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isSupportBle;
+import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isSupportBluetooth;
+
+import java.util.List;
+
+import com.excellence.bluetoothlibrary.callback.IPermissionListener;
+import com.excellence.bluetoothlibrary.callback.IScannerListener;
+import com.excellence.bluetoothlibrary.data.BluetoothKitDevice;
+import com.excellence.bluetoothlibrary.exception.BluetoothError;
+import com.excellence.bluetoothlibrary.exception.BluetoothSupportError;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -7,17 +20,6 @@ import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
-
-import com.excellence.bluetoothlibrary.data.BluetoothKitDevice;
-import com.excellence.bluetoothlibrary.exception.BluetoothError;
-import com.excellence.bluetoothlibrary.callback.IScannerListener;
-import com.excellence.bluetoothlibrary.callback.IPermissionListener;
-
-import java.util.List;
-
-import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isBluetoothEnabled;
-import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isLocationEnabled;
-import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isSupportBluetooth;
 
 /**
  * <pre>
@@ -74,7 +76,16 @@ public class BluetoothClient
 		 */
 		if (!isSupportBluetooth())
 		{
-			mPermissionListener.onBluetoothError(new BluetoothError("Your device don't support bluetooth!"));
+			mPermissionListener.onBluetoothError(new BluetoothSupportError("Your device don't support bluetooth!"));
+			return;
+		}
+
+		/**
+		 * 只对BLE方式，不支持低功耗设备
+		 */
+		if (mBluetoothRequest.getSearchMethod() == BluetoothRequest.SearchMethod.BLUETOOTH_LE && !isSupportBle())
+		{
+			mPermissionListener.onBluetoothError(new BluetoothSupportError("Your device don't support bluetooth le!"));
 			return;
 		}
 
