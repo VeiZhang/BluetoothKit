@@ -33,7 +33,6 @@ public class BluetoothKitDevice implements Parcelable
 		this.scanRecord = scanRecord;
 	}
 
-	@SuppressLint("MissingPermission")
 	public String getName()
 	{
 		return bluetoothDevice == null ? "NULL" : bluetoothDevice.getName();

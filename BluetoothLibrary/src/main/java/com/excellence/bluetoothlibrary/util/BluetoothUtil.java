@@ -45,7 +45,6 @@ public class BluetoothUtil
 	 *
 	 * @return
 	 */
-	@SuppressLint("MissingPermission")
 	public static boolean isBluetoothEnabled()
 	{
 		return isSupportBluetooth() && BluetoothAdapter.getDefaultAdapter().isEnabled();

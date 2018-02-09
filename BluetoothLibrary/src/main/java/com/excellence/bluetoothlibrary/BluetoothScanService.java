@@ -95,9 +95,11 @@ public class BluetoothScanService extends Service implements Handler.Callback
 		mScannerListenerImp = scannerListenerImp;
 		mBleKitDeviceList = new ArrayList<>();
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		stopSearch();
 		switch (mBluetoothRequest.getSearchMethod())
 		{
 		case BLUETOOTH_LE:
+		default:
 			startScan();
 			break;
 
@@ -115,23 +117,21 @@ public class BluetoothScanService extends Service implements Handler.Callback
 	protected void stopSearch()
 	{
 		stopScan();
+		cancelDiscovery();
 	}
 
-	@SuppressLint("MissingPermission")
 	private void startDiscovery()
 	{
 		isBluetoothClassicRunning = true;
 		mBluetoothAdapter.startDiscovery();
 	}
 
-	@SuppressLint("MissingPermission")
 	private void cancelDiscovery()
 	{
 		isBluetoothClassicRunning = false;
 		mBluetoothAdapter.cancelDiscovery();
 	}
 
-	@SuppressLint("MissingPermission")
 	private void startScan()
 	{
 		isBluetoothLeRunning = true;
@@ -143,7 +143,6 @@ public class BluetoothScanService extends Service implements Handler.Callback
 		mHandler.sendEmptyMessageDelayed(MSG_STOP_SEARCH, mBluetoothRequest.getTimeOut());
 	}
 
-	@SuppressLint("MissingPermission")
 	private void stopScan()
 	{
 		isBluetoothLeRunning = false;
