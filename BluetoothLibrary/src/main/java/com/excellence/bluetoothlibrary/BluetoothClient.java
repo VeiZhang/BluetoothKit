@@ -63,14 +63,25 @@ public class BluetoothClient
 		mPermissionListener = new PermissionListener();
 	}
 
-	public void search(BluetoothRequest request, IScannerListener listener)
+	public BluetoothClient addBluetoothRequest(BluetoothRequest bluetoothRequest)
 	{
-		mBluetoothRequest = request;
+		mBluetoothRequest = bluetoothRequest;
+		return this;
+	}
+
+	public BluetoothClient addListener(IScannerListener listener)
+	{
+		mScannerListener = listener;
+		return this;
+	}
+
+	public void search()
+	{
 		if (mBluetoothRequest == null)
 		{
 			mBluetoothRequest = new BluetoothRequest.Builder().build();
 		}
-		mScannerListener = listener;
+
 		/**
 		 * 不支持蓝牙设备
 		 */
