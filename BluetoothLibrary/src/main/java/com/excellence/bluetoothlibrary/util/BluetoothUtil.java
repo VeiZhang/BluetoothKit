@@ -1,6 +1,5 @@
 package com.excellence.bluetoothlibrary.util;
 
-import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.location.LocationManager;

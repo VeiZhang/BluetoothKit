@@ -1,6 +1,5 @@
 package com.excellence.bluetoothlibrary.data;
 
-import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,6 +1,13 @@
 package com.excellence.bluetoothlibrary;
 
-import android.annotation.SuppressLint;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import com.excellence.bluetoothlibrary.callback.IScannerListener;
+import com.excellence.bluetoothlibrary.data.BluetoothKitDevice;
+import com.excellence.bluetoothlibrary.exception.BluetoothScanError;
+
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -15,14 +22,6 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
-
-import com.excellence.bluetoothlibrary.data.BluetoothKitDevice;
-import com.excellence.bluetoothlibrary.callback.IScannerListener;
-import com.excellence.bluetoothlibrary.exception.BluetoothScanError;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * <pre>
