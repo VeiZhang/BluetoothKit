@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BluetoothLibrary</string>
     <string name="setting_prompt">Request location permission</string>
     <string name="open_location">Please open location setting, or you won\'t search bluetooth
         devices!
