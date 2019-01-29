@@ -16,9 +16,9 @@ import android.os.Parcelable;
 public class BluetoothKitDevice implements Parcelable
 {
 
-	public BluetoothDevice bluetoothDevice;
-	public int rssi;
-	public byte[] scanRecord;
+	private BluetoothDevice bluetoothDevice;
+	private int rssi;
+	private byte[] scanRecord;
 
 	public BluetoothKitDevice(BluetoothDevice bluetoothDevice)
 	{
@@ -34,12 +34,27 @@ public class BluetoothKitDevice implements Parcelable
 
 	public String getName()
 	{
-		return bluetoothDevice == null ? "NULL" : bluetoothDevice.getName();
+		return bluetoothDevice == null ? "" : bluetoothDevice.getName();
 	}
 
 	public String getAddress()
 	{
 		return bluetoothDevice == null ? "" : bluetoothDevice.getAddress();
+	}
+
+	public BluetoothDevice getBluetoothDevice()
+	{
+		return bluetoothDevice;
+	}
+
+	public int getRssi()
+	{
+		return rssi;
+	}
+
+	public byte[] getScanRecord()
+	{
+		return scanRecord;
 	}
 
 	@Override
