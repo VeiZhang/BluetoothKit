@@ -2,10 +2,9 @@
 
 ## 功能
 
-* 封装经典蓝牙、低功耗蓝牙BLE
-* 检索：不过滤检索、过滤名字检索、过滤Mac地址检索
-* UUID：不过滤、过滤
-* 通讯：读取、写入蓝牙信息
+- [x] 搜索：经典蓝牙、低功耗蓝牙BLE
+- [x] 检索方式：UUID、名字检索、Mac地址检索
+- [ ] 通讯：读取、写入蓝牙信息
 
 ## 使用
 
@@ -18,6 +17,11 @@
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 ```
+
+* BluetoothRequest配置
+
+    * 扫描超时时间，可选，默认10秒；小于等于0表示不限制扫描时间
+    * 如果扫描不出来，可将主工程里的**targetSdkVersion**调到低于23
 
 ## 书籍
 

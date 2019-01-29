@@ -52,11 +52,13 @@ public class BluetoothClient
 	public static BluetoothClient getInstance(Context context)
 	{
 		if (mInstance == null)
+		{
 			mInstance = new BluetoothClient(context.getApplicationContext());
+		}
 		return mInstance;
 	}
 
-	public BluetoothClient(Context context)
+	private BluetoothClient(Context context)
 	{
 		mContext = context;
 		mScannerListenerImp = new ScannerListenerImp();
@@ -103,7 +105,7 @@ public class BluetoothClient
 		/**
 		 * 打开蓝牙
 		 */
-		if (!isBluetoothEnabled())
+		if (!isBluetoothEnabled() && mBluetoothRequest.isPermissionCheck())
 		{
 			startPermissionActivity();
 		}
@@ -169,10 +171,14 @@ public class BluetoothClient
 		public void onScanStarted()
 		{
 			if (mScannerListener != null)
+			{
 				mScannerListener.onScanStarted();
+			}
 
 			if (isServiceBind)
+			{
 				mContext.unbindService(mServiceConnection);
+			}
 			isServiceBind = mContext.bindService(new Intent(mContext, BluetoothScanService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
 		}
 
@@ -180,21 +186,27 @@ public class BluetoothClient
 		public void onScanning(BluetoothKitDevice device)
 		{
 			if (mScannerListener != null)
+			{
 				mScannerListener.onScanning(device);
+			}
 		}
 
 		@Override
 		public void onScanFinished(List<BluetoothKitDevice> deviceList)
 		{
 			if (mScannerListener != null)
+			{
 				mScannerListener.onScanFinished(deviceList);
+			}
 		}
 
 		@Override
 		public void onScanFailed(BluetoothError e)
 		{
 			if (mScannerListener != null)
+			{
 				mScannerListener.onScanFailed(e);
+			}
 		}
 	}
 

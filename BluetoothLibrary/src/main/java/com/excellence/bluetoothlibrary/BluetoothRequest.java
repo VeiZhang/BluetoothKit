@@ -1,10 +1,10 @@
 package com.excellence.bluetoothlibrary;
 
-import android.text.TextUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import android.text.TextUtils;
 
 /**
  * <pre>
@@ -22,6 +22,7 @@ public class BluetoothRequest
 	private List<UUID> mServiceUuids = null;
 	private long mTimeOut = 0;
 	private boolean isAutoConnect = false;
+	private boolean isPermissionCheck = true;
 	private SearchMethod mSearchMethod = SearchMethod.BLUETOOTH_LE;
 
 	private BluetoothRequest(Builder builder)
@@ -31,6 +32,7 @@ public class BluetoothRequest
 		mServiceUuids = builder.mServiceUuids;
 		mTimeOut = builder.mTimeOut;
 		isAutoConnect = builder.isAutoConnect;
+		isPermissionCheck = builder.isPermissionCheck;
 		mSearchMethod = builder.mSearchMethod;
 	}
 
@@ -59,6 +61,11 @@ public class BluetoothRequest
 		return isAutoConnect;
 	}
 
+	public boolean isPermissionCheck()
+	{
+		return isPermissionCheck;
+	}
+
 	public SearchMethod getSearchMethod()
 	{
 		return mSearchMethod;
@@ -73,6 +80,7 @@ public class BluetoothRequest
 		private List<UUID> mServiceUuids = null;
 		private long mTimeOut = DEFAULT_TIME_OUT;
 		private boolean isAutoConnect = false;
+		private boolean isPermissionCheck = true;
 		private SearchMethod mSearchMethod = SearchMethod.BLUETOOTH_LE;
 
 		public Builder()
@@ -95,7 +103,9 @@ public class BluetoothRequest
 				for (String name : nameList)
 				{
 					if (!TextUtils.isEmpty(name))
+					{
 						mDeviceNameList.add(name);
+					}
 				}
 			}
 			return this;
@@ -114,7 +124,9 @@ public class BluetoothRequest
 				for (String mac : macList)
 				{
 					if (!TextUtils.isEmpty(mac))
+					{
 						mDeviceMacList.add(mac);
+					}
 				}
 			}
 			return this;
@@ -133,7 +145,9 @@ public class BluetoothRequest
 				for (String uuid : uuidList)
 				{
 					if (!TextUtils.isEmpty(uuid))
+					{
 						mServiceUuids.add(UUID.fromString(uuid));
+					}
 				}
 			}
 			return this;
@@ -161,6 +175,19 @@ public class BluetoothRequest
 		{
 			this.isAutoConnect = isAutoConnect;
 			return this;
+		}
+
+		/**
+		 * 是否自动检测权限
+		 * <p>
+		 *     默认，启用，；但是有些设备，如Android机顶盒有些使用打开蓝牙的方式打不开，一直卡住，此时则关闭自动检测
+		 * </p>
+		 *
+		 * @param permissionCheck
+		 */
+		public void isPermissionCheck(boolean permissionCheck)
+		{
+			isPermissionCheck = permissionCheck;
 		}
 
 		/**

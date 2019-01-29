@@ -70,7 +70,9 @@ public class BluetoothScanService extends Service implements Handler.Callback
 		public void onReceive(Context context, Intent intent)
 		{
 			if (intent == null || intent.getAction() == null)
+			{
 				return;
+			}
 			switch (intent.getAction())
 			{
 			case BluetoothAdapter.ACTION_STATE_CHANGED:
@@ -94,7 +96,14 @@ public class BluetoothScanService extends Service implements Handler.Callback
 		mScannerListenerImp = scannerListenerImp;
 		mBleKitDeviceList = new ArrayList<>();
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
 		stopSearch();
+
+		if (mBluetoothRequest.getTimeOut() > 0)
+        {
+            mHandler.sendEmptyMessageDelayed(MSG_STOP_SEARCH, mBluetoothRequest.getTimeOut());
+        }
+
 		switch (mBluetoothRequest.getSearchMethod())
 		{
 		case BLUETOOTH_LE:
@@ -115,6 +124,7 @@ public class BluetoothScanService extends Service implements Handler.Callback
 
 	protected void stopSearch()
 	{
+		mHandler.removeCallbacksAndMessages(null);
 		stopScan();
 		cancelDiscovery();
 	}
@@ -138,14 +148,11 @@ public class BluetoothScanService extends Service implements Handler.Callback
 		{
 			mBluetoothAdapter.startLeScan(mBluetoothRequest.getServiceUuids().toArray(new UUID[mBluetoothRequest.getServiceUuids().size()]), mLeScanCallback);
 		}
-		mHandler.removeCallbacksAndMessages(null);
-		mHandler.sendEmptyMessageDelayed(MSG_STOP_SEARCH, mBluetoothRequest.getTimeOut());
 	}
 
 	private void stopScan()
 	{
 		isBluetoothLeRunning = false;
-		mHandler.removeCallbacksAndMessages(null);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
 		{
 			mBluetoothAdapter.stopLeScan(mLeScanCallback);
@@ -158,7 +165,7 @@ public class BluetoothScanService extends Service implements Handler.Callback
 		switch (msg.what)
 		{
 		case MSG_STOP_SEARCH:
-			stopScan();
+			stopSearch();
 			mScannerListenerImp.onScanFinished(mBleKitDeviceList);
 			return true;
 		}
