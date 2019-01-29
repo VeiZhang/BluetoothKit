@@ -17,7 +17,7 @@ import android.util.Log;
 
 public class BluetoothUtil
 {
-	public static final String TAG = BluetoothUtil.class.getSimpleName();
+	private static final String TAG = BluetoothUtil.class.getSimpleName();
 
 	/**
 	 * 是否支持经典蓝牙

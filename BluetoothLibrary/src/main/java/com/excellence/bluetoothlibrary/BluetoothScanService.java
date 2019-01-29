@@ -34,7 +34,7 @@ import android.support.annotation.Nullable;
 
 public class BluetoothScanService extends Service implements Handler.Callback
 {
-	public static final String TAG = BluetoothScanService.class.getSimpleName();
+	private static final String TAG = BluetoothScanService.class.getSimpleName();
 
 	private static final int MSG_STOP_SEARCH = 0;
 

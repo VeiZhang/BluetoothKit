@@ -14,10 +14,13 @@ import com.excellence.bluetoothlibrary.exception.BluetoothError;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity
 {
+
+	private static final String TAG = MainActivity.class.getSimpleName();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -29,31 +32,31 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onClick(View v)
 			{
-				BluetoothRequest request = new BluetoothRequest.Builder().setSearchMethod(BLUETOOTH_LE).build();
+				BluetoothRequest request = new BluetoothRequest.Builder().isPermissionCheck(false).setSearchMethod(BLUETOOTH_LE).build();
 				BluetoothClient.getInstance(MainActivity.this).addBluetoothRequest(request).addListener(new IScannerListener()
 				{
 					@Override
 					public void onScanStarted()
 					{
-
+						Log.d(TAG, "onScanStarted");
 					}
 
 					@Override
 					public void onScanning(BluetoothKitDevice device)
 					{
-
+						Log.i(TAG, "onScanning: " + device.getName() + " - " + device.getAddress());
 					}
 
 					@Override
 					public void onScanFinished(List<BluetoothKitDevice> deviceList)
 					{
-
+						Log.d(TAG, "onScanFinished: " + deviceList.size());
 					}
 
 					@Override
 					public void onScanFailed(BluetoothError e)
 					{
-
+						e.printStackTrace();
 					}
 				}).search();
 			}

@@ -181,6 +181,9 @@ public class BluetoothRequest
 		 * 是否自动检测权限
 		 * <p>
 		 *     默认，启用，；但是有些设备，如Android机顶盒有些使用打开蓝牙的方式打不开，一直卡住，此时则关闭自动检测
+		 *
+		 *     如果关闭了权限检测后，不能搜索出蓝牙，很可能是需要权限，最终办法是设置 targetSdkVersion < 23
+		 *     Need ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION permission to get scan results
 		 * </p>
 		 *
 		 * @param permissionCheck
