@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.excellence.bluetoothlibrary.callback.IScannerListener;
-import com.excellence.bluetoothlibrary.data.BluetoothKitDevice;
+import com.excellence.bluetoothlibrary.entity.BluetoothKitDevice;
 import com.excellence.bluetoothlibrary.exception.BluetoothScanError;
 
 import android.app.Service;

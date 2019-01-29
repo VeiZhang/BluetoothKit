@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.excellence.bluetoothlibrary.callback.IPermissionListener;
 import com.excellence.bluetoothlibrary.callback.IScannerListener;
-import com.excellence.bluetoothlibrary.data.BluetoothKitDevice;
+import com.excellence.bluetoothlibrary.entity.BluetoothKitDevice;
 import com.excellence.bluetoothlibrary.exception.BluetoothError;
 import com.excellence.bluetoothlibrary.exception.BluetoothSupportError;
 

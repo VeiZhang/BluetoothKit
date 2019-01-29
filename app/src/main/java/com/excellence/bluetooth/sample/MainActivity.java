@@ -8,7 +8,7 @@ import com.excellence.bluetooth.sample.databinding.ActivityMainBinding;
 import com.excellence.bluetoothlibrary.BluetoothClient;
 import com.excellence.bluetoothlibrary.BluetoothRequest;
 import com.excellence.bluetoothlibrary.callback.IScannerListener;
-import com.excellence.bluetoothlibrary.data.BluetoothKitDevice;
+import com.excellence.bluetoothlibrary.entity.BluetoothKitDevice;
 import com.excellence.bluetoothlibrary.exception.BluetoothError;
 
 import android.databinding.DataBindingUtil;

@@ -1,4 +1,4 @@
-package com.excellence.bluetoothlibrary.data;
+package com.excellence.bluetoothlibrary.entity;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Parcel;

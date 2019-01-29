@@ -1,9 +1,9 @@
 package com.excellence.bluetoothlibrary.callback;
 
-import com.excellence.bluetoothlibrary.data.BluetoothKitDevice;
-import com.excellence.bluetoothlibrary.exception.BluetoothError;
-
 import java.util.List;
+
+import com.excellence.bluetoothlibrary.entity.BluetoothKitDevice;
+import com.excellence.bluetoothlibrary.exception.BluetoothError;
 
 /**
  * <pre>
