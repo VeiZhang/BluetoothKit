@@ -37,7 +37,7 @@ import android.util.Log;
 
 public class BluetoothClient
 {
-	public static final String TAG = BluetoothClient.class.getSimpleName();
+	private static final String TAG = BluetoothClient.class.getSimpleName();
 
 	private static BluetoothClient mInstance = null;
 
@@ -139,7 +139,7 @@ public class BluetoothClient
 		public void onBluetoothEnabled()
 		{
 			int targetSdk = mContext.getApplicationInfo().targetSdkVersion;
-			if (targetSdk >= Build.VERSION_CODES.M && !isLocationEnabled(mContext))
+			if (targetSdk >= Build.VERSION_CODES.M && !isLocationEnabled(mContext) && mBluetoothRequest.isPermissionCheck())
 			{
 				/**
 				 * 打开GPS，或者网络定位
