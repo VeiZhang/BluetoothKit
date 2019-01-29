@@ -1,5 +1,13 @@
 package com.excellence.bluetoothlibrary;
 
+import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isBluetoothEnabled;
+import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isLocationEnabled;
+import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isSupportBluetooth;
+
+import com.excellence.bluetoothlibrary.callback.IPermissionListener;
+import com.excellence.bluetoothlibrary.exception.BluetoothEnabledError;
+import com.excellence.bluetoothlibrary.exception.BluetoothPermissionError;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -9,14 +17,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
-import com.excellence.bluetoothlibrary.exception.BluetoothEnabledError;
-import com.excellence.bluetoothlibrary.exception.BluetoothPermissionError;
-import com.excellence.bluetoothlibrary.callback.IPermissionListener;
-
-import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isBluetoothEnabled;
-import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isLocationEnabled;
-import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isSupportBluetooth;
 
 /**
  * <pre>
@@ -37,6 +37,8 @@ public class PermissionActivity extends Activity
 	private static final int LOCATION_ENABLED_REQUEST_CODE = 2048;
 
 	private static IPermissionListener mPermissionListener = null;
+
+	private AlertDialog mPermissionDialog = null;
 
 	protected static void setPermissionListener(IPermissionListener permissionListener)
 	{
@@ -73,7 +75,11 @@ public class PermissionActivity extends Activity
 				return;
 			}
 
-			new AlertDialog.Builder(this).setCancelable(false).setTitle(R.string.setting_prompt).setMessage(R.string.open_location)
+			if (mPermissionDialog != null)
+			{
+				mPermissionDialog.dismiss();
+			}
+			mPermissionDialog = new AlertDialog.Builder(this).setCancelable(false).setTitle(R.string.setting_prompt).setMessage(R.string.open_location)
 					.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
 					{
 						@Override

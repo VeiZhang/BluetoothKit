@@ -185,9 +185,10 @@ public class BluetoothRequest
 		 *
 		 * @param permissionCheck
 		 */
-		public void isPermissionCheck(boolean permissionCheck)
+		public Builder isPermissionCheck(boolean permissionCheck)
 		{
 			isPermissionCheck = permissionCheck;
+			return this;
 		}
 
 		/**
