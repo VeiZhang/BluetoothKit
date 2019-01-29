@@ -1,7 +1,8 @@
 package com.excellence.bluetoothlibrary;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.excellence.bluetoothlibrary.callback.IScannerListener;
@@ -41,7 +42,7 @@ public class BluetoothScanService extends Service implements Handler.Callback
 	private Handler mHandler = null;
 	private BluetoothRequest mBluetoothRequest = null;
 	private IScannerListener mScannerListenerImp = null;
-	private List<BluetoothKitDevice> mBleKitDeviceList = null;
+	private Map<String, BluetoothKitDevice> mBleKitDeviceList = null;
 	private BluetoothAdapter mBluetoothAdapter = null;
 	private boolean isBluetoothLeRunning = false;
 	private boolean isBluetoothClassicRunning = false;
@@ -94,15 +95,15 @@ public class BluetoothScanService extends Service implements Handler.Callback
 		mHandler = new Handler(Looper.getMainLooper(), this);
 		mBluetoothRequest = bluetoothRequest;
 		mScannerListenerImp = scannerListenerImp;
-		mBleKitDeviceList = new ArrayList<>();
+		mBleKitDeviceList = new LinkedHashMap<>();
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 		stopSearch();
 
 		if (mBluetoothRequest.getTimeOut() > 0)
-        {
-            mHandler.sendEmptyMessageDelayed(MSG_STOP_SEARCH, mBluetoothRequest.getTimeOut());
-        }
+		{
+			mHandler.sendEmptyMessageDelayed(MSG_STOP_SEARCH, mBluetoothRequest.getTimeOut());
+		}
 
 		switch (mBluetoothRequest.getSearchMethod())
 		{
@@ -146,7 +147,15 @@ public class BluetoothScanService extends Service implements Handler.Callback
 		isBluetoothLeRunning = true;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
 		{
-			mBluetoothAdapter.startLeScan(mBluetoothRequest.getServiceUuids().toArray(new UUID[mBluetoothRequest.getServiceUuids().size()]), mLeScanCallback);
+			UUID[] uuids = mBluetoothRequest.getServiceUuids().toArray(new UUID[mBluetoothRequest.getServiceUuids().size()]);
+			if (uuids.length == 0)
+			{
+				mBluetoothAdapter.startLeScan(mLeScanCallback);
+			}
+			else
+			{
+				mBluetoothAdapter.startLeScan(uuids, mLeScanCallback);
+			}
 		}
 	}
 
@@ -166,7 +175,7 @@ public class BluetoothScanService extends Service implements Handler.Callback
 		{
 		case MSG_STOP_SEARCH:
 			stopSearch();
-			mScannerListenerImp.onScanFinished(mBleKitDeviceList);
+			mScannerListenerImp.onScanFinished(new ArrayList<>(mBleKitDeviceList.values()));
 			return true;
 		}
 		return false;
@@ -177,16 +186,19 @@ public class BluetoothScanService extends Service implements Handler.Callback
 		@Override
 		public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord)
 		{
-			mHandler.post(new Runnable()
+			if (device != null && !mBleKitDeviceList.containsKey(device.getAddress()))
 			{
-				@Override
-				public void run()
+				mHandler.post(new Runnable()
 				{
-					BluetoothKitDevice bluetoothKitDevice = new BluetoothKitDevice(device, rssi, scanRecord);
-					mBleKitDeviceList.add(bluetoothKitDevice);
-					mScannerListenerImp.onScanning(bluetoothKitDevice);
-				}
-			});
+					@Override
+					public void run()
+					{
+						BluetoothKitDevice bluetoothKitDevice = new BluetoothKitDevice(device, rssi, scanRecord);
+						mBleKitDeviceList.put(device.getAddress(), bluetoothKitDevice);
+						mScannerListenerImp.onScanning(bluetoothKitDevice);
+					}
+				});
+			}
 		}
 	};
 
