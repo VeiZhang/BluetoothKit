@@ -156,6 +156,10 @@ public class BluetoothRequest
 		/**
 		 * 设置搜索超时时间，默认20s，<=0表示不限制超时时间
 		 *
+		 * {@link SearchMethod#BLUETOOTH_CLASSIC} 经典蓝牙自动停止搜索，同时，低功耗蓝牙也停止搜索
+		 * {@link SearchMethod#BLUETOOTH_LE} 低功耗蓝牙设置搜索的超时时间
+		 * 此设置项是对两个同时停止
+		 *
 		 * @param time unit: ms
 		 * @return
 		 */

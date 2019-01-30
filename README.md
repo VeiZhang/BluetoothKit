@@ -23,7 +23,27 @@
     * 扫描超时时间，可选，默认10秒；小于等于0表示不限制扫描时间
     * 如果扫描不出来，可将主工程里的**targetSdkVersion**调到低于23
 
-## API - BluetoothRequest
+## API - [BluetoothRequest][BluetoothRequest]
+
+
+* setScanTimeOut
+    ```
+    /**
+     * 设置搜索超时时间，默认20s，<=0表示不限制超时时间
+     *
+     * {@link SearchMethod#BLUETOOTH_CLASSIC} 经典蓝牙自动停止搜索，同时，低功耗蓝牙也停止搜索
+     * {@link SearchMethod#BLUETOOTH_LE} 低功耗蓝牙设置搜索的超时时间
+     * 此设置项是对两个同时停止
+     *
+     * @param time unit: ms
+     * @return
+     */
+    public Builder setScanTimeOut(long time)
+    {
+        mTimeOut = time;
+        return this;
+    }
+    ```
 
 * isPermissionCheck
     ```
@@ -52,3 +72,4 @@
 
 [permission]:https://github.com/VeiZhang/Permission
 [BLE和经典蓝牙Android编程说明]:https://github.com/VeiZhang/BluetoothKit/blob/master/book/BLE%E5%92%8C%E7%BB%8F%E5%85%B8%E8%93%9D%E7%89%99Android%E7%BC%96%E7%A8%8B%E8%AF%B4%E6%98%8E.pdf
+[BluetoothRequest]:https://github.com/VeiZhang/BluetoothKit/blob/master/BluetoothLibrary/src/main/java/com/excellence/bluetoothlibrary/BluetoothRequest.java

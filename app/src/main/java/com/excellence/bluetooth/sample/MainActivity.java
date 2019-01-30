@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onClick(View v)
 			{
-				BluetoothRequest request = new BluetoothRequest.Builder().isPermissionCheck(false).build();
+				BluetoothRequest request = new BluetoothRequest.Builder().setScanTimeOut(0).isPermissionCheck(false).build();
 				BluetoothClient.getInstance(MainActivity.this).addBluetoothRequest(request).addListener(new IScannerListener()
 				{
 					@Override

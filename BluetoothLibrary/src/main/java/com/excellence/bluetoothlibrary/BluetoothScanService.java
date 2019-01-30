@@ -39,6 +39,7 @@ public class BluetoothScanService extends Service implements Handler.Callback
 	private static final String TAG = BluetoothScanService.class.getSimpleName();
 
 	private static final int MSG_STOP_SEARCH = 0;
+	private static final int MSG_AUTO_STOP_SEARCH = 1;
 
 	private Handler mHandler = null;
 	private BluetoothRequest mBluetoothRequest = null;
@@ -86,7 +87,7 @@ public class BluetoothScanService extends Service implements Handler.Callback
 			{
 				return;
 			}
-			Log.i(TAG, "onReceive: " + intent.getAction());
+			Log.d(TAG, "onReceive: " + intent.getAction());
 			switch (intent.getAction())
 			{
 			case BluetoothAdapter.ACTION_STATE_CHANGED:
@@ -107,9 +108,15 @@ public class BluetoothScanService extends Service implements Handler.Callback
 				break;
 
 			case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
+				isBluetoothClassicRunning = true;
 				break;
 
 			case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
+				if (isBluetoothClassicRunning)
+				{
+					mHandler.sendEmptyMessage(MSG_AUTO_STOP_SEARCH);
+				}
+				isBluetoothClassicRunning = false;
 				break;
 
 			default:
@@ -160,13 +167,11 @@ public class BluetoothScanService extends Service implements Handler.Callback
 
 	private void startDiscovery()
 	{
-		isBluetoothClassicRunning = true;
 		mBluetoothAdapter.startDiscovery();
 	}
 
 	private void cancelDiscovery()
 	{
-		isBluetoothClassicRunning = false;
 		mBluetoothAdapter.cancelDiscovery();
 	}
 
@@ -205,6 +210,15 @@ public class BluetoothScanService extends Service implements Handler.Callback
 			stopSearch();
 			mScannerListenerImp.onScanFinished(new ArrayList<>(mBleKitDeviceList.values()));
 			return true;
+
+		case MSG_AUTO_STOP_SEARCH:
+			mHandler.removeCallbacksAndMessages(null);
+			stopScan();
+			mScannerListenerImp.onScanFinished(new ArrayList<>(mBleKitDeviceList.values()));
+			return true;
+
+		default:
+			break;
 		}
 		return false;
 	}
