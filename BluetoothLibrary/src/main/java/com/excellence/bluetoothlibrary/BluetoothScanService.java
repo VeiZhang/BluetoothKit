@@ -234,19 +234,28 @@ public class BluetoothScanService extends Service implements Handler.Callback
 
 	private void addBluetoothDevice(final BluetoothDevice device, final int rssi, final byte[] scanRecord)
 	{
-		if (device != null && !mBleKitDeviceList.containsKey(device.getAddress()))
+		if (device == null || mBleKitDeviceList.containsKey(device.getAddress()))
 		{
-			mHandler.post(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					BluetoothKitDevice bluetoothKitDevice = new BluetoothKitDevice(device, rssi, scanRecord);
-					mBleKitDeviceList.put(device.getAddress(), bluetoothKitDevice);
-					mScannerListenerImp.onScanning(bluetoothKitDevice);
-				}
-			});
+			return;
 		}
+		if (mBluetoothRequest.getDeviceNameList().size() > 0 && !mBluetoothRequest.getDeviceNameList().contains(device.getName()))
+		{
+			return;
+		}
+		if (mBluetoothRequest.getDeviceMacList().size() > 0 && !mBluetoothRequest.getDeviceMacList().contains(device.getAddress()))
+		{
+			return;
+		}
+		mHandler.post(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				BluetoothKitDevice bluetoothKitDevice = new BluetoothKitDevice(device, rssi, scanRecord);
+				mBleKitDeviceList.put(device.getAddress(), bluetoothKitDevice);
+				mScannerListenerImp.onScanning(bluetoothKitDevice);
+			}
+		});
 	}
 
 	public class BluetoothBinder extends Binder

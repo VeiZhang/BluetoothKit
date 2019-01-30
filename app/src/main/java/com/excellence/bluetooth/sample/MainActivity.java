@@ -11,6 +11,7 @@ import com.excellence.bluetoothlibrary.exception.BluetoothError;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -42,7 +43,13 @@ public class MainActivity extends AppCompatActivity
 					@Override
 					public void onScanning(BluetoothKitDevice device)
 					{
-						Log.i(TAG, "onScanning: " + device.getName() + " - " + device.getAddress());
+						ParcelUuid[] parcelUuids = device.getBluetoothDevice().getUuids();
+						String uuid = "";
+						if (parcelUuids != null && parcelUuids.length > 0)
+						{
+							uuid = parcelUuids[0].toString();
+						}
+						Log.i(TAG, "onScanning: " + device.getName() + " - " + device.getAddress() + " - " + uuid);
 					}
 
 					@Override
@@ -62,16 +69,9 @@ public class MainActivity extends AppCompatActivity
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-		Log.i(TAG, "onResume: ");
-	}
-
-	@Override
 	protected void onPause()
 	{
 		super.onPause();
-		Log.i(TAG, "onPause: ");
 		BluetoothClient.getInstance(this).stopSearch();
 	}
 

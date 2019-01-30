@@ -20,11 +20,82 @@
 
 * BluetoothRequest配置
 
-    * 扫描超时时间，可选，默认10秒；小于等于0表示不限制扫描时间
+    * 扫描超时时间，可选，默认20秒；小于等于0表示不限制扫描时间；但是会被经典蓝牙限制搜索时间，经典蓝牙搜索结束，则停止所有的搜索
     * 如果扫描不出来，可将主工程里的**targetSdkVersion**调到低于23
 
 ## API - [BluetoothRequest][BluetoothRequest]
 
+* addDeviceName
+    ```
+    /**
+     * 过滤蓝牙名称
+     *
+     * @param nameList
+     * @return
+     */
+    public Builder addDeviceName(String... nameList)
+    {
+        if (nameList != null && nameList.length > 0)
+        {
+            for (String name : nameList)
+            {
+                if (!TextUtils.isEmpty(name))
+                {
+                    mDeviceNameList.add(name);
+                }
+            }
+        }
+        return this;
+    }
+    ```
+
+* addDeviceMac
+    ```
+    /**
+     * 过滤蓝牙Mac地址
+     *
+     * @param macList
+     * @return
+     */
+    public Builder addDeviceMac(String... macList)
+    {
+        if (macList != null && macList.length > 0)
+        {
+            for (String mac : macList)
+            {
+                if (!TextUtils.isEmpty(mac))
+                {
+                    mDeviceMacList.add(mac);
+                }
+            }
+        }
+        return this;
+    }
+    ```
+
+* addServiceUuid
+    ```
+    /**
+     * 过滤UUID
+     *
+     * @param uuidList
+     * @return
+     */
+    public Builder addServiceUuid(String... uuidList)
+    {
+        if (uuidList != null && uuidList.length > 0)
+        {
+            for (String uuid : uuidList)
+            {
+                if (!TextUtils.isEmpty(uuid))
+                {
+                    mServiceUuids.add(UUID.fromString(uuid));
+                }
+            }
+        }
+        return this;
+    }
+    ```
 
 * setScanTimeOut
     ```
