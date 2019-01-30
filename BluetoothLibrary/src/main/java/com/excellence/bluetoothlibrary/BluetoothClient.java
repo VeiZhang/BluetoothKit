@@ -127,10 +127,15 @@ public class BluetoothClient
 	{
 		if (mBluetoothScanService == null)
 		{
-			Log.e(TAG, "stopSearch: please search first");
+			Log.d(TAG, "stopSearch: please search first");
 			return;
 		}
 		mBluetoothScanService.stopSearch();
+		if (isServiceBind)
+		{
+			mContext.unbindService(mServiceConnection);
+		}
+		mBluetoothScanService = null;
 	}
 
 	private class PermissionListener implements IPermissionListener
@@ -175,10 +180,7 @@ public class BluetoothClient
 				mScannerListener.onScanStarted();
 			}
 
-			if (isServiceBind)
-			{
-				mContext.unbindService(mServiceConnection);
-			}
+			stopSearch();
 			isServiceBind = mContext.bindService(new Intent(mContext, BluetoothScanService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
 		}
 
@@ -222,7 +224,8 @@ public class BluetoothClient
 		@Override
 		public void onServiceDisconnected(ComponentName name)
 		{
-			mBluetoothScanService = null;
+			// 异常销毁时，触发
+			stopSearch();
 		}
 	};
 }

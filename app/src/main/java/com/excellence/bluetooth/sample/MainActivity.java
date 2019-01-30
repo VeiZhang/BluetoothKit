@@ -1,7 +1,5 @@
 package com.excellence.bluetooth.sample;
 
-import static com.excellence.bluetoothlibrary.BluetoothRequest.SearchMethod.BLUETOOTH_LE;
-
 import java.util.List;
 
 import com.excellence.bluetooth.sample.databinding.ActivityMainBinding;
@@ -32,7 +30,7 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onClick(View v)
 			{
-				BluetoothRequest request = new BluetoothRequest.Builder().isPermissionCheck(false).setSearchMethod(BLUETOOTH_LE).build();
+				BluetoothRequest request = new BluetoothRequest.Builder().isPermissionCheck(false).build();
 				BluetoothClient.getInstance(MainActivity.this).addBluetoothRequest(request).addListener(new IScannerListener()
 				{
 					@Override
@@ -62,4 +60,19 @@ public class MainActivity extends AppCompatActivity
 			}
 		});
 	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Log.i(TAG, "onResume: ");
+	}
+
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		Log.i(TAG, "onPause: ");
+		BluetoothClient.getInstance(this).stopSearch();
+	}
+
 }
