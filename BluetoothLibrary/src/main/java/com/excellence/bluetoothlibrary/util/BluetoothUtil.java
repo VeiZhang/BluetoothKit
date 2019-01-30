@@ -81,4 +81,40 @@ public class BluetoothUtil
 		Log.e(TAG, "isGpsEnabled: Gps enabled : " + gpsEnabled + " - Network enabled : " + networkEnabled);
 		return gpsEnabled || networkEnabled;
 	}
+
+	/**
+	 * 隐式打开蓝牙，不推荐，会卡顿
+	 *
+	 * @see BluetoothAdapter#ACTION_REQUEST_ENABLE
+	 *
+	 * @return
+	 */
+	@Deprecated
+	public static boolean openBluetooth()
+	{
+		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+		if (adapter != null)
+		{
+			return adapter.enable();
+		}
+		return false;
+	}
+
+	/**
+	 * 隐式关闭蓝牙
+	 *
+	 * @see android.provider.Settings#ACTION_BLUETOOTH_SETTINGS
+	 *
+	 * @return
+	 */
+	@Deprecated
+	public static boolean closeBluetooth()
+	{
+		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+		if (adapter != null)
+		{
+			return adapter.disable();
+		}
+		return false;
+	}
 }
