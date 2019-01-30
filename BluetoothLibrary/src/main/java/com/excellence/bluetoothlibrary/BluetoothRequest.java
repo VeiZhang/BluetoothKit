@@ -21,7 +21,6 @@ public class BluetoothRequest
 	private List<String> mDeviceMacList = null;
 	private List<UUID> mServiceUuids = null;
 	private long mTimeOut = 0;
-	private boolean isAutoConnect = false;
 	private boolean isPermissionCheck = true;
 	private SearchMethod mSearchMethod = SearchMethod.BLUETOOTH_LE;
 
@@ -31,7 +30,6 @@ public class BluetoothRequest
 		mDeviceMacList = builder.mDeviceMacList;
 		mServiceUuids = builder.mServiceUuids;
 		mTimeOut = builder.mTimeOut;
-		isAutoConnect = builder.isAutoConnect;
 		isPermissionCheck = builder.isPermissionCheck;
 		mSearchMethod = builder.mSearchMethod;
 	}
@@ -56,11 +54,6 @@ public class BluetoothRequest
 		return mTimeOut;
 	}
 
-	public boolean isAutoConnect()
-	{
-		return isAutoConnect;
-	}
-
 	public boolean isPermissionCheck()
 	{
 		return isPermissionCheck;
@@ -79,7 +72,6 @@ public class BluetoothRequest
 		private List<String> mDeviceMacList = null;
 		private List<UUID> mServiceUuids = null;
 		private long mTimeOut = DEFAULT_TIME_OUT;
-		private boolean isAutoConnect = false;
 		private boolean isPermissionCheck = true;
 		private SearchMethod mSearchMethod = SearchMethod.BLUETOOTH_BOTH;
 
@@ -166,18 +158,6 @@ public class BluetoothRequest
 		public Builder setScanTimeOut(long time)
 		{
 			mTimeOut = time;
-			return this;
-		}
-
-		/**
-		 * 是否自动连接
-		 *
-		 * @param isAutoConnect
-		 * @return
-		 */
-		public Builder isAutoConnect(boolean isAutoConnect)
-		{
-			this.isAutoConnect = isAutoConnect;
 			return this;
 		}
 
