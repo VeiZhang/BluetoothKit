@@ -73,7 +73,7 @@ public class BluetoothRequest
 
 	public static class Builder
 	{
-		private static final long DEFAULT_TIME_OUT = 10 * 1000;
+		private static final long DEFAULT_TIME_OUT = 20 * 1000;
 
 		private List<String> mDeviceNameList = null;
 		private List<String> mDeviceMacList = null;
@@ -81,7 +81,7 @@ public class BluetoothRequest
 		private long mTimeOut = DEFAULT_TIME_OUT;
 		private boolean isAutoConnect = false;
 		private boolean isPermissionCheck = true;
-		private SearchMethod mSearchMethod = SearchMethod.BLUETOOTH_LE;
+		private SearchMethod mSearchMethod = SearchMethod.BLUETOOTH_BOTH;
 
 		public Builder()
 		{
@@ -154,7 +154,7 @@ public class BluetoothRequest
 		}
 
 		/**
-		 * 设置搜索超时时间，默认10s，<0表示不限制超时时间
+		 * 设置搜索超时时间，默认20s，<=0表示不限制超时时间
 		 *
 		 * @param time unit: ms
 		 * @return
