@@ -9,26 +9,21 @@ package com.excellence.bluetoothlibrary.exception;
  * </pre>
  */
 
-public class BluetoothSupportError extends BluetoothError
-{
+public class BluetoothSupportError extends BluetoothError {
 
-	public BluetoothSupportError()
-	{
-		super();
-	}
+    public BluetoothSupportError() {
+        super();
+    }
 
-	public BluetoothSupportError(String message)
-	{
-		super(message);
-	}
+    public BluetoothSupportError(String message) {
+        super(message);
+    }
 
-	public BluetoothSupportError(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
+    public BluetoothSupportError(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public BluetoothSupportError(Throwable cause)
-	{
-		super(cause);
-	}
+    public BluetoothSupportError(Throwable cause) {
+        super(cause);
+    }
 }

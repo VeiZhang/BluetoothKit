@@ -1,9 +1,9 @@
 package com.excellence.bluetoothlibrary.callback;
 
-import java.util.List;
-
 import com.excellence.bluetoothlibrary.entity.BluetoothKitDevice;
 import com.excellence.bluetoothlibrary.exception.BluetoothError;
+
+import java.util.List;
 
 /**
  * <pre>
@@ -14,30 +14,25 @@ import com.excellence.bluetoothlibrary.exception.BluetoothError;
  * </pre>
  */
 
-public class ScannerListener implements IScannerListener
-{
+public class ScannerListener implements IScannerListener {
 
-	@Override
-	public void onScanStarted()
-	{
+    @Override
+    public void onScanStarted() {
 
-	}
+    }
 
-	@Override
-	public void onScanning(BluetoothKitDevice device)
-	{
+    @Override
+    public void onScanning(BluetoothKitDevice device) {
 
-	}
+    }
 
-	@Override
-	public void onScanFinished(List<BluetoothKitDevice> deviceList)
-	{
+    @Override
+    public void onScanFinished(List<BluetoothKitDevice> deviceList) {
 
-	}
+    }
 
-	@Override
-	public void onScanFailed(BluetoothError e)
-	{
+    @Override
+    public void onScanFailed(BluetoothError e) {
 
-	}
+    }
 }

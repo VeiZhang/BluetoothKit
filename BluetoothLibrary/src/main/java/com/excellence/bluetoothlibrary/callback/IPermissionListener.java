@@ -11,11 +11,11 @@ import com.excellence.bluetoothlibrary.exception.BluetoothError;
  * </pre>
  */
 
-public interface IPermissionListener
-{
-	void onBluetoothEnabled();
+public interface IPermissionListener {
 
-	void onBluetoothPermissionGranted();
+    void onBluetoothEnabled();
 
-	void onBluetoothError(BluetoothError e);
+    void onBluetoothPermissionGranted();
+
+    void onBluetoothError(BluetoothError e);
 }

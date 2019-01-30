@@ -1,18 +1,5 @@
 package com.excellence.bluetoothlibrary;
 
-import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isBluetoothEnabled;
-import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isLocationEnabled;
-import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isSupportBle;
-import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isSupportBluetooth;
-
-import java.util.List;
-
-import com.excellence.bluetoothlibrary.callback.IPermissionListener;
-import com.excellence.bluetoothlibrary.callback.IScannerListener;
-import com.excellence.bluetoothlibrary.entity.BluetoothKitDevice;
-import com.excellence.bluetoothlibrary.exception.BluetoothError;
-import com.excellence.bluetoothlibrary.exception.BluetoothSupportError;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +8,19 @@ import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.excellence.bluetoothlibrary.callback.IPermissionListener;
+import com.excellence.bluetoothlibrary.callback.IScannerListener;
+import com.excellence.bluetoothlibrary.entity.BluetoothKitDevice;
+import com.excellence.bluetoothlibrary.exception.BluetoothError;
+import com.excellence.bluetoothlibrary.exception.BluetoothSupportError;
+
+import java.util.List;
+
+import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isBluetoothEnabled;
+import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isLocationEnabled;
+import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isSupportBle;
+import static com.excellence.bluetoothlibrary.util.BluetoothUtil.isSupportBluetooth;
+
 /**
  * <pre>
  *     author : VeiZhang
@@ -28,204 +28,169 @@ import android.util.Log;
  *     time   : 2017/12/29
  *     desc   : 蓝牙工具类
  *     			权限 {@link android.Manifest.permission#BLUETOOTH}
- *     				{@link android.Manifest.permission#BLUETOOTH_ADMIN}
- *     				{@link android.Manifest.permission#BLUETOOTH_PRIVILEGED}
- *					{@link android.Manifest.permission#ACCESS_FINE_LOCATION}
- *					{@link android.Manifest.permission#ACCESS_COARSE_LOCATION}
+ *                   {@link android.Manifest.permission#BLUETOOTH_ADMIN}
+ *                   {@link android.Manifest.permission#BLUETOOTH_PRIVILEGED}
+ *                   {@link android.Manifest.permission#ACCESS_FINE_LOCATION}
+ *                   {@link android.Manifest.permission#ACCESS_COARSE_LOCATION}
  * </pre>
  */
 
-public class BluetoothClient
-{
-	private static final String TAG = BluetoothClient.class.getSimpleName();
+public class BluetoothClient {
 
-	private static BluetoothClient mInstance = null;
+    private static final String TAG = BluetoothClient.class.getSimpleName();
 
-	private Context mContext = null;
-	private BluetoothScanService mBluetoothScanService = null;
-	private boolean isServiceBind = false;
-	private BluetoothRequest mBluetoothRequest = null;
-	private IScannerListener mScannerListenerImp = null;
-	private IScannerListener mScannerListener = null;
-	private IPermissionListener mPermissionListener = null;
+    private static BluetoothClient mInstance = null;
 
-	public static BluetoothClient getInstance(Context context)
-	{
-		if (mInstance == null)
-		{
-			mInstance = new BluetoothClient(context.getApplicationContext());
-		}
-		return mInstance;
-	}
+    private Context mContext = null;
+    private BluetoothScanService mBluetoothScanService = null;
+    private boolean isServiceBind = false;
+    private BluetoothRequest mBluetoothRequest = null;
+    private IScannerListener mScannerListenerImp = null;
+    private IScannerListener mScannerListener = null;
+    private IPermissionListener mPermissionListener = null;
 
-	private BluetoothClient(Context context)
-	{
-		mContext = context;
-		mScannerListenerImp = new ScannerListenerImp();
-		mPermissionListener = new PermissionListener();
-	}
+    public static BluetoothClient getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new BluetoothClient(context.getApplicationContext());
+        }
+        return mInstance;
+    }
 
-	public BluetoothClient addBluetoothRequest(BluetoothRequest bluetoothRequest)
-	{
-		mBluetoothRequest = bluetoothRequest;
-		return this;
-	}
+    private BluetoothClient(Context context) {
+        mContext = context;
+        mScannerListenerImp = new ScannerListenerImp();
+        mPermissionListener = new PermissionListener();
+    }
 
-	public BluetoothClient addListener(IScannerListener listener)
-	{
-		mScannerListener = listener;
-		return this;
-	}
+    public BluetoothClient addBluetoothRequest(BluetoothRequest bluetoothRequest) {
+        mBluetoothRequest = bluetoothRequest;
+        return this;
+    }
 
-	public void search()
-	{
-		if (mBluetoothRequest == null)
-		{
-			mBluetoothRequest = new BluetoothRequest.Builder().build();
-		}
+    public BluetoothClient addListener(IScannerListener listener) {
+        mScannerListener = listener;
+        return this;
+    }
 
-		/**
-		 * 不支持蓝牙设备
-		 */
-		if (!isSupportBluetooth())
-		{
-			mPermissionListener.onBluetoothError(new BluetoothSupportError("Your device don't support bluetooth!"));
-			return;
-		}
+    public void search() {
+        if (mBluetoothRequest == null) {
+            mBluetoothRequest = new BluetoothRequest.Builder().build();
+        }
 
-		/**
-		 * 只对BLE方式，不支持低功耗设备
-		 */
-		if (mBluetoothRequest.getSearchMethod() == BluetoothRequest.SearchMethod.BLUETOOTH_LE && !isSupportBle())
-		{
-			mPermissionListener.onBluetoothError(new BluetoothSupportError("Your device don't support bluetooth le!"));
-			return;
-		}
+        /**
+         * 不支持蓝牙设备
+         */
+        if (!isSupportBluetooth()) {
+            mPermissionListener.onBluetoothError(new BluetoothSupportError("Your device don't support bluetooth!"));
+            return;
+        }
 
-		/**
-		 * 打开蓝牙
-		 */
-		if (!isBluetoothEnabled() && mBluetoothRequest.isPermissionCheck())
-		{
-			startPermissionActivity();
-		}
-		else
-		{
-			mPermissionListener.onBluetoothEnabled();
-		}
-	}
+        /**
+         * 只对BLE方式，不支持低功耗设备
+         */
+        if (mBluetoothRequest.getSearchMethod() == BluetoothRequest.SearchMethod.BLUETOOTH_LE && !isSupportBle()) {
+            mPermissionListener.onBluetoothError(new BluetoothSupportError("Your device don't support bluetooth le!"));
+            return;
+        }
 
-	private void startPermissionActivity()
-	{
-		PermissionActivity.setPermissionListener(mPermissionListener);
-		Intent intent = new Intent(mContext, PermissionActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		mContext.startActivity(intent);
-	}
+        /**
+         * 打开蓝牙
+         */
+        if (!isBluetoothEnabled() && mBluetoothRequest.isPermissionCheck()) {
+            startPermissionActivity();
+        } else {
+            mPermissionListener.onBluetoothEnabled();
+        }
+    }
 
-	public void stopSearch()
-	{
-		if (mBluetoothScanService == null)
-		{
-			Log.d(TAG, "stopSearch: please search first");
-			return;
-		}
-		mBluetoothScanService.stopSearch();
-		if (isServiceBind)
-		{
-			mContext.unbindService(mServiceConnection);
-		}
-		mBluetoothScanService = null;
-	}
+    private void startPermissionActivity() {
+        PermissionActivity.setPermissionListener(mPermissionListener);
+        Intent intent = new Intent(mContext, PermissionActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(intent);
+    }
 
-	private class PermissionListener implements IPermissionListener
-	{
-		@Override
-		public void onBluetoothEnabled()
-		{
-			int targetSdk = mContext.getApplicationInfo().targetSdkVersion;
-			if (targetSdk >= Build.VERSION_CODES.M && !isLocationEnabled(mContext) && mBluetoothRequest.isPermissionCheck())
-			{
-				/**
-				 * 打开GPS，或者网络定位
-				 */
-				startPermissionActivity();
-			}
-			else
-			{
-				mPermissionListener.onBluetoothPermissionGranted();
-			}
-		}
+    public void stopSearch() {
+        if (mBluetoothScanService == null) {
+            Log.d(TAG, "stopSearch: please search first");
+            return;
+        }
+        mBluetoothScanService.stopSearch();
+        if (isServiceBind) {
+            mContext.unbindService(mServiceConnection);
+        }
+        mBluetoothScanService = null;
+    }
 
-		@Override
-		public void onBluetoothPermissionGranted()
-		{
-			mScannerListenerImp.onScanStarted();
-		}
+    private class PermissionListener implements IPermissionListener {
+        @Override
+        public void onBluetoothEnabled() {
+            int targetSdk = mContext.getApplicationInfo().targetSdkVersion;
+            if (targetSdk >= Build.VERSION_CODES.M && !isLocationEnabled(mContext) && mBluetoothRequest.isPermissionCheck()) {
+                /**
+                 * 打开GPS，或者网络定位
+                 */
+                startPermissionActivity();
+            } else {
+                mPermissionListener.onBluetoothPermissionGranted();
+            }
+        }
 
-		@Override
-		public void onBluetoothError(BluetoothError e)
-		{
-			mScannerListenerImp.onScanFailed(e);
-		}
-	}
+        @Override
+        public void onBluetoothPermissionGranted() {
+            mScannerListenerImp.onScanStarted();
+        }
 
-	private class ScannerListenerImp implements IScannerListener
-	{
-		@Override
-		public void onScanStarted()
-		{
-			if (mScannerListener != null)
-			{
-				mScannerListener.onScanStarted();
-			}
+        @Override
+        public void onBluetoothError(BluetoothError e) {
+            mScannerListenerImp.onScanFailed(e);
+        }
+    }
 
-			stopSearch();
-			isServiceBind = mContext.bindService(new Intent(mContext, BluetoothScanService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
-		}
+    private class ScannerListenerImp implements IScannerListener {
+        @Override
+        public void onScanStarted() {
+            if (mScannerListener != null) {
+                mScannerListener.onScanStarted();
+            }
 
-		@Override
-		public void onScanning(BluetoothKitDevice device)
-		{
-			if (mScannerListener != null)
-			{
-				mScannerListener.onScanning(device);
-			}
-		}
+            stopSearch();
+            isServiceBind = mContext.bindService(new Intent(mContext, BluetoothScanService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
+        }
 
-		@Override
-		public void onScanFinished(List<BluetoothKitDevice> deviceList)
-		{
-			if (mScannerListener != null)
-			{
-				mScannerListener.onScanFinished(deviceList);
-			}
-		}
+        @Override
+        public void onScanning(BluetoothKitDevice device) {
+            if (mScannerListener != null) {
+                mScannerListener.onScanning(device);
+            }
+        }
 
-		@Override
-		public void onScanFailed(BluetoothError e)
-		{
-			if (mScannerListener != null)
-			{
-				mScannerListener.onScanFailed(e);
-			}
-		}
-	}
+        @Override
+        public void onScanFinished(List<BluetoothKitDevice> deviceList) {
+            if (mScannerListener != null) {
+                mScannerListener.onScanFinished(deviceList);
+            }
+        }
 
-	private ServiceConnection mServiceConnection = new ServiceConnection()
-	{
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service)
-		{
-			mBluetoothScanService = ((BluetoothScanService.BluetoothBinder) service).getService();
-			mBluetoothScanService.search(mBluetoothRequest, mScannerListenerImp);
-		}
+        @Override
+        public void onScanFailed(BluetoothError e) {
+            if (mScannerListener != null) {
+                mScannerListener.onScanFailed(e);
+            }
+        }
+    }
 
-		@Override
-		public void onServiceDisconnected(ComponentName name)
-		{
-			// 异常销毁时，触发
-			stopSearch();
-		}
-	};
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mBluetoothScanService = ((BluetoothScanService.BluetoothBinder) service).getService();
+            mBluetoothScanService.search(mBluetoothRequest, mScannerListenerImp);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            // 异常销毁时，触发
+            stopSearch();
+        }
+    };
 }

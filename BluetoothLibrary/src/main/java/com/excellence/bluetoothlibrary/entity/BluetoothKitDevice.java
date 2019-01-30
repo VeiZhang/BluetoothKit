@@ -13,83 +13,69 @@ import android.os.Parcelable;
  * </pre>
  */
 
-public class BluetoothKitDevice implements Parcelable
-{
+public class BluetoothKitDevice implements Parcelable {
 
-	private BluetoothDevice bluetoothDevice;
-	private int rssi;
-	private byte[] scanRecord;
+    private BluetoothDevice bluetoothDevice;
+    private int rssi;
+    private byte[] scanRecord;
 
-	public BluetoothKitDevice(BluetoothDevice bluetoothDevice)
-	{
-		this(bluetoothDevice, 0, null);
-	}
+    public BluetoothKitDevice(BluetoothDevice bluetoothDevice) {
+        this(bluetoothDevice, 0, null);
+    }
 
-	public BluetoothKitDevice(BluetoothDevice bluetoothDevice, int rssi, byte[] scanRecord)
-	{
-		this.bluetoothDevice = bluetoothDevice;
-		this.rssi = rssi;
-		this.scanRecord = scanRecord;
-	}
+    public BluetoothKitDevice(BluetoothDevice bluetoothDevice, int rssi, byte[] scanRecord) {
+        this.bluetoothDevice = bluetoothDevice;
+        this.rssi = rssi;
+        this.scanRecord = scanRecord;
+    }
 
-	public String getName()
-	{
-		return bluetoothDevice == null ? "" : bluetoothDevice.getName();
-	}
+    public String getName() {
+        return bluetoothDevice == null ? "" : bluetoothDevice.getName();
+    }
 
-	public String getAddress()
-	{
-		return bluetoothDevice == null ? "" : bluetoothDevice.getAddress();
-	}
+    public String getAddress() {
+        return bluetoothDevice == null ? "" : bluetoothDevice.getAddress();
+    }
 
-	public BluetoothDevice getBluetoothDevice()
-	{
-		return bluetoothDevice;
-	}
+    public BluetoothDevice getBluetoothDevice() {
+        return bluetoothDevice;
+    }
 
-	public int getRssi()
-	{
-		return rssi;
-	}
+    public int getRssi() {
+        return rssi;
+    }
 
-	public byte[] getScanRecord()
-	{
-		return scanRecord;
-	}
+    public byte[] getScanRecord() {
+        return scanRecord;
+    }
 
-	@Override
-	public int describeContents()
-	{
-		return 0;
-	}
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-	@Override
-	public void writeToParcel(Parcel dest, int flags)
-	{
-		dest.writeParcelable(this.bluetoothDevice, flags);
-		dest.writeInt(this.rssi);
-		dest.writeByteArray(this.scanRecord);
-	}
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.bluetoothDevice, flags);
+        dest.writeInt(this.rssi);
+        dest.writeByteArray(this.scanRecord);
+    }
 
-	protected BluetoothKitDevice(Parcel in)
-	{
-		this.bluetoothDevice = in.readParcelable(BluetoothDevice.class.getClassLoader());
-		this.rssi = in.readInt();
-		this.scanRecord = in.createByteArray();
-	}
+    protected BluetoothKitDevice(Parcel in) {
+        this.bluetoothDevice = in.readParcelable(BluetoothDevice.class.getClassLoader());
+        this.rssi = in.readInt();
+        this.scanRecord = in.createByteArray();
+    }
 
-	public static final Parcelable.Creator<BluetoothKitDevice> CREATOR = new Parcelable.Creator<BluetoothKitDevice>()
-	{
-		@Override
-		public BluetoothKitDevice createFromParcel(Parcel source)
-		{
-			return new BluetoothKitDevice(source);
-		}
+    public static final Parcelable.Creator<BluetoothKitDevice> CREATOR = new Parcelable.Creator<BluetoothKitDevice>() {
+        @Override
+        public BluetoothKitDevice createFromParcel(Parcel source) {
+            return new BluetoothKitDevice(source);
+        }
 
-		@Override
-		public BluetoothKitDevice[] newArray(int size)
-		{
-			return new BluetoothKitDevice[size];
-		}
-	};
+        @Override
+        public BluetoothKitDevice[] newArray(int size) {
+            return new BluetoothKitDevice[size];
+        }
+    };
 }

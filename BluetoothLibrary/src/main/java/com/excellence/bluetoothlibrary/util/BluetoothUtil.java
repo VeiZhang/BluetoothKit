@@ -15,106 +15,96 @@ import android.util.Log;
  * </pre>
  */
 
-public class BluetoothUtil
-{
-	private static final String TAG = BluetoothUtil.class.getSimpleName();
+public class BluetoothUtil {
 
-	/**
-	 * 是否支持经典蓝牙
-	 *
-	 * @return {@code true}:支持<br>{@code false}:不支持
-	 */
-	public static boolean isSupportBluetooth()
-	{
-		return BluetoothAdapter.getDefaultAdapter() != null;
-	}
+    private static final String TAG = BluetoothUtil.class.getSimpleName();
 
-	/**
-	 * 是否支持BLE低功耗蓝牙
-	 *
-	 * @return
-	 */
-	public static boolean isSupportBle()
-	{
-		return isSupportBluetooth() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2;
-	}
+    /**
+     * 是否支持经典蓝牙
+     *
+     * @return {@code true}:支持<br>{@code false}:不支持
+     */
+    public static boolean isSupportBluetooth() {
+        return BluetoothAdapter.getDefaultAdapter() != null;
+    }
 
-	/**
-	 * 是否打开了蓝牙
-	 *
-	 * @return
-	 */
-	public static boolean isBluetoothEnabled()
-	{
-		return isSupportBluetooth() && BluetoothAdapter.getDefaultAdapter().isEnabled();
-	}
+    /**
+     * 是否支持BLE低功耗蓝牙
+     *
+     * @return
+     */
+    public static boolean isSupportBle() {
+        return isSupportBluetooth() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2;
+    }
 
-	/**
-	 * 定位是否打开，针对TargetSDKVersion>=23
-	 *
-	 * @param context
-	 * @return
-	 */
-	public static boolean isLocationEnabled(Context context)
-	{
-		LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		if (locationManager == null || locationManager.getAllProviders() == null || locationManager.getAllProviders().size() == 0)
-		{
-			/**
-			 * 不支持定位，则默认为打开状态
-			 */
-			Log.w(TAG, "isGpsOEnabled: location manager is null or location providers is empty");
-			return true;
-		}
+    /**
+     * 是否打开了蓝牙
+     *
+     * @return
+     */
+    public static boolean isBluetoothEnabled() {
+        return isSupportBluetooth() && BluetoothAdapter.getDefaultAdapter().isEnabled();
+    }
 
-		if (!locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER) && !locationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER))
-		{
-			/**
-			 * 没有gps或网络模块，则默认为打开状态
-			 */
-			Log.w(TAG, "isGpsOEnabled: NO gps or network devices");
-			return true;
-		}
+    /**
+     * 定位是否打开，针对TargetSDKVersion>=23
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isLocationEnabled(Context context) {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager == null || locationManager.getAllProviders() == null || locationManager.getAllProviders().size() == 0) {
+            /**
+             * 不支持定位，则默认为打开状态
+             */
+            Log.w(TAG, "isGpsOEnabled: location manager is null or location providers is empty");
+            return true;
+        }
 
-		boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-		boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-		Log.e(TAG, "isGpsEnabled: Gps enabled : " + gpsEnabled + " - Network enabled : " + networkEnabled);
-		return gpsEnabled || networkEnabled;
-	}
+        if (!locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER) && !locationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+            /**
+             * 没有gps或网络模块，则默认为打开状态
+             */
+            Log.w(TAG, "isGpsOEnabled: NO gps or network devices");
+            return true;
+        }
 
-	/**
-	 * 隐式打开蓝牙，不推荐，会卡顿
-	 *
-	 * @see BluetoothAdapter#ACTION_REQUEST_ENABLE
-	 *
-	 * @return
-	 */
-	@Deprecated
-	public static boolean openBluetooth()
-	{
-		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-		if (adapter != null)
-		{
-			return adapter.enable();
-		}
-		return false;
-	}
+        boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        Log.e(TAG, "isGpsEnabled: Gps enabled : " + gpsEnabled + " - Network enabled : " + networkEnabled);
+        return gpsEnabled || networkEnabled;
+    }
 
-	/**
-	 * 隐式关闭蓝牙
-	 *
-	 * @see android.provider.Settings#ACTION_BLUETOOTH_SETTINGS
-	 *
-	 * @return
-	 */
-	@Deprecated
-	public static boolean closeBluetooth()
-	{
-		BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-		if (adapter != null)
-		{
-			return adapter.disable();
-		}
-		return false;
-	}
+    /**
+     * 隐式打开蓝牙，不推荐，会卡顿
+     *
+     * @see BluetoothAdapter#ACTION_REQUEST_ENABLE
+     *
+     * @return
+     */
+    @Deprecated
+    public static boolean openBluetooth() {
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if (adapter != null) {
+            return adapter.enable();
+        }
+        return false;
+    }
+
+    /**
+     * 隐式关闭蓝牙
+     *
+     * @see android.provider.Settings#ACTION_BLUETOOTH_SETTINGS
+     *
+     * @return
+     */
+    @Deprecated
+    public static boolean closeBluetooth() {
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        if (adapter != null) {
+            return adapter.disable();
+        }
+        return false;
+    }
 }
