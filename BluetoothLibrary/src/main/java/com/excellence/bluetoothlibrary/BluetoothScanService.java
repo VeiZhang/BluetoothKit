@@ -23,6 +23,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * <pre>
@@ -60,7 +61,18 @@ public class BluetoothScanService extends Service implements Handler.Callback
 	{
 		IntentFilter intentFilter = new IntentFilter();
 		// 蓝牙开关状态
+		intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+		intentFilter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
 		intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+
+		// 蓝牙搜索
+		intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+		intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
+		intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
+		// 蓝牙配对
+		intentFilter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
+
 		registerReceiver(mBluetoothStateReceiver, intentFilter);
 		return new BluetoothBinder();
 	}
@@ -74,6 +86,7 @@ public class BluetoothScanService extends Service implements Handler.Callback
 			{
 				return;
 			}
+			Log.i(TAG, "onReceive: " + intent.getAction());
 			switch (intent.getAction())
 			{
 			case BluetoothAdapter.ACTION_STATE_CHANGED:
@@ -85,6 +98,21 @@ public class BluetoothScanService extends Service implements Handler.Callback
 						mScannerListenerImp.onScanFailed(new BluetoothScanError("Bluetooth close when scanning!"));
 					}
 				}
+				break;
+
+			case BluetoothDevice.ACTION_FOUND:
+				BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+				short rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, (short) 0);
+				addBluetoothDevice(device, rssi, null);
+				break;
+
+			case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
+				break;
+
+			case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
+				break;
+
+			default:
 				break;
 			}
 		}
@@ -186,21 +214,26 @@ public class BluetoothScanService extends Service implements Handler.Callback
 		@Override
 		public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord)
 		{
-			if (device != null && !mBleKitDeviceList.containsKey(device.getAddress()))
-			{
-				mHandler.post(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						BluetoothKitDevice bluetoothKitDevice = new BluetoothKitDevice(device, rssi, scanRecord);
-						mBleKitDeviceList.put(device.getAddress(), bluetoothKitDevice);
-						mScannerListenerImp.onScanning(bluetoothKitDevice);
-					}
-				});
-			}
+			addBluetoothDevice(device, rssi, scanRecord);
 		}
 	};
+
+	private void addBluetoothDevice(final BluetoothDevice device, final int rssi, final byte[] scanRecord)
+	{
+		if (device != null && !mBleKitDeviceList.containsKey(device.getAddress()))
+		{
+			mHandler.post(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					BluetoothKitDevice bluetoothKitDevice = new BluetoothKitDevice(device, rssi, scanRecord);
+					mBleKitDeviceList.put(device.getAddress(), bluetoothKitDevice);
+					mScannerListenerImp.onScanning(bluetoothKitDevice);
+				}
+			});
+		}
+	}
 
 	public class BluetoothBinder extends Binder
 	{
