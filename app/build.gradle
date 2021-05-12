@@ -1,7 +1,8 @@
-apply plugin: 'com.android.application'
+apply from: 'https://gist.githubusercontent.com/VeiZhang/01779005843bc5b70b11551ca13c2ced/raw/application.gradle'
+
+def libs = rootProject.ext.dependencies
 
 android {
-    compileSdkVersion 26
     defaultConfig {
         applicationId "com.excellence.bluetooth.sample"
         minSdkVersion 15
@@ -10,23 +11,32 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    dataBinding {
-        enabled true
-    }
+}
+
+configurations.all {
+    // 不使用缓存，使用仓库中最新的包
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    implementation libs["appcompat-v7"]
+
+    /**可以使用远程库或者使用本地Module Library*/
+    /**远程库**/
+    // implementation 'com.excellence:bluetooth:_latestVersion'
+    /**或者使用+，自动使用最新依赖包**/
+    // implementation 'com.excellence:bluetooth:+'
+    /**本地Library**/
     implementation project(':BluetoothLibrary')
+
+    /** Github packages **/
+//    implementation('com.excellence:bluetooth:1.0.0') {
+//        changing = true
+//    }
 }
